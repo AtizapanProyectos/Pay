@@ -172,4 +172,4 @@ STORAGES = {
 
 
 
-CSRF_TRUSTED_ORIGINS =  ['http://*', 'https://*', 'https://web-production-a4c8f.up.railway.app']
+CSRF_TRUSTED_ORIGINS =  ['http://*', 'https://*', 'https://web-production-12f15b.up.railway.app']
