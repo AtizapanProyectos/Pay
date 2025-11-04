@@ -1,0 +1,275 @@
+/* ---
+   Hoja de Estilos Institucional - Atizapán de Zaragoza 2025-2027
+   Basado en el Manual de Identidad Gráfica
+--- */
+
+/* 🎨 Paleta de Colores Institucionales (Página 13 y 23 del manual) */
+:root {
+    /* Colores Principales */
+    --color-morado-oscuro: #4d4383;  /* Exclusividad */
+    --color-morado-claro: #6767a5;   /* Sofisticación */
+    --color-verde-azulado: #56858d;  /* Equilibrio */
+    --color-azul-claro: #79b0cc;    /* Confianza */
+    --color-magenta: #b64f80;       /* Calidez y Accesibilidad */
+    --color-gris-oscuro: #585958;    /* Texto principal */
+    --color-azul-noche: #0f1f3d;     /* Elegancia (del eslogan) */
+    
+    /* Colores de UI */
+    --color-fondo: #f4f7f9;
+    --color-blanco: #ffffff;
+    --color-borde: #dee2e6;
+    --color-texto-principal: #333;
+    --color-texto-secundario: #6c757d;
+    
+    /* Colores para Alertas */
+    --color-exito: #198754;
+    --color-error: #dc3545;
+    --color-info: #0d6efd;
+
+    /* ✒️ Tipografías Institucionales (Páginas 11-12 y 22 del manual) */
+    --font-titulos: 'Gilroy-Heavy', 'Gilroy-Black', sans-serif;
+    --font-textos: 'Gilroy-Light', 'Gilroy-Regular', sans-serif;
+    --font-eslogan-sigamos: 'Gilroy Light', sans-serif;
+    --font-eslogan-creciendo: 'Gilroy Bold', sans-serif;
+}
+
+/* --- Estilos Globales y Reseteo --- */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-textos);
+    background-color: var(--color-fondo);
+    color: var(--color-texto-principal);
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* --- Jerarquía Tipográfica --- */
+h1, h2, h3 {
+    font-family: var(--font-titulos);
+    color: var(--color-morado-oscuro);
+    margin-top: 0;
+}
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.5rem; }
+p { margin-bottom: 1rem; }
+a {
+    color: var(--color-magenta);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+a:hover {
+    color: var(--color-morado-oscuro);
+    text-decoration: underline;
+}
+
+/* --- Contenedores y Layout --- */
+.container {
+    max-width: 1100px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+}
+
+.card {
+    background-color: var(--color-blanco);
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+    margin-bottom: 2rem;
+}
+
+/* --- Header y Navegación --- */
+.main-header {
+    background-color: var(--color-blanco);
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--color-borde);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.logo-container {
+  /* Estas dos líneas centran el contenido horizontalmente */
+  display: flex;
+  justify-content: center;
+
+  /* Opcional: añade un poco de espacio arriba y abajo */
+  padding: 20px 0; 
+}
+
+.logo-container img {
+  /* Define el ancho que quieres para tu logo */
+  width: 250px; 
+  
+  /* Esto asegura que la altura se ajuste automáticamente para no deformar la imagen */
+  height: auto; 
+}
+
+.user-info a {
+    color: var(--color-error);
+    font-weight: bold;
+}
+
+/* --- Componentes de UI: Botones --- */
+.btn {
+    display: inline-block;
+    font-family: var(--font-textos);
+    font-weight: bold;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    color: var(--color-blanco);
+    cursor: pointer;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary { background-color: var(--color-morado-claro); }
+.btn-success { background-color: var(--color-exito); }
+.btn-danger { background-color: var(--color-error); }
+.btn-secondary { background-color: var(--color-verde-azulado); }
+
+.btn-sm {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.875rem;
+}
+
+/* --- Componentes de UI: Formularios --- */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-control {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 1px solid var(--color-borde);
+    border-radius: 8px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--color-morado-claro);
+    box-shadow: 0 0 0 3px rgba(103, 103, 165, 0.25);
+}
+
+/* --- Zona de Carga de Archivos (Drop Area) --- */
+#drop-area {
+    border: 3px dashed var(--color-borde);
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+    color: var(--color-texto-secundario);
+    transition: border-color 0.3s, background-color 0.3s;
+    cursor: pointer;
+}
+
+#drop-area.highlight {
+    /* ✅ REGLA: Usamos un color institucional para resaltar */
+    border-color: var(--color-morado-oscuro);
+    background-color: #f0f3ff;
+}
+
+#drop-area p {
+    margin: 10px 0;
+    font-size: 1.2em;
+}
+
+#fileElem { display: none; }
+#gallery { margin-top: 15px; color: var(--color-texto-principal); }
+
+/* --- Tabla de Archivos --- */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 2rem;
+}
+.table th, .table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--color-borde);
+}
+.table thead th {
+    font-family: var(--font-titulos);
+    color: var(--color-morado-oscuro);
+    border-bottom-width: 2px;
+}
+.table tbody tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+/* --- Avisos y Alertas --- */
+.alert {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    border: 1px solid transparent;
+}
+.alert-success {
+    color: #0f5132;
+    background-color: #d1e7dd;
+    border-color: #badbcc;
+}
+.alert-danger {
+    color: #842029;
+    background-color: #f8d7da;
+    border-color: #f5c2c7;
+}
+
+/* --- Diseño Responsivo --- */
+@media (max-width: 768px) {
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.75rem; }
+    .main-header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    .table thead {
+        display: none; /* Ocultamos encabezados en móvil */
+    }
+    .table, .table tbody, .table tr, .table td {
+        display: block;
+        width: 100%;
+    }
+    .table tr {
+        margin-bottom: 1rem;
+        border: 1px solid var(--color-borde);
+        border-radius: 8px;
+    }
+    .table td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+        border: none;
+    }
+    .table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 0.5rem;
+        width: 45%;
+        padding-right: 1rem;
+        text-align: left;
+        font-weight: bold;
+        font-family: var(--font-titulos);
+    }
+    .action-buttons {
+        justify-content: flex-end;
+    }
+}
