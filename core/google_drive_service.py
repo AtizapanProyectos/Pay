@@ -1,44 +1,70 @@
 # core/google_drive_service.py
 import os
+import io
 from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseUpload
 from django.conf import settings
-import io
+from google.auth.exceptions import RefreshError # Para manejar errores de token
+# Si necesitas un token fresco y no tienes el refresh_token, 
+# la siguiente línea es la que realizaría el flujo interactivo (pero la quitamos)
+# from google_auth_oauthlib.flow import InstalledAppFlow 
 
 # Define los permisos que tu app necesitará.
-# 'drive.file' es un buen balance para crear, ver y administrar archivos creados por la app.
 SCOPES = ['https://www.googleapis.com/auth/drive']
+# Dirección base de OAuth 2.0 de Google (necesaria para el refresh)
+TOKEN_URI = 'https://oauth2.googleapis.com/token'
+
 
 def get_drive_service():
     """
-    Autentica y devuelve un objeto de servicio de la API de Drive.
+    Autentica y devuelve un objeto de servicio de la API de Drive
+    usando variables de settings.py (con REFRESH_TOKEN para persistencia).
     """
     creds = None
-    token_path = os.path.join(settings.BASE_DIR, 'token.json')
-    credentials_path = os.path.join(settings.BASE_DIR, 'credentials.json')
-
-    # El archivo token.json almacena los tokens de acceso y actualización del usuario,
-    # y se crea automáticamente la primera vez que se completa el flujo de autorización.
-    if os.path.exists(token_path):
-        creds = Credentials.from_authorized_user_file(token_path, SCOPES)
     
-    # Si no hay credenciales (válidas), permite que el usuario inicie sesión.
-    if not creds or not creds.valid:
+    # --- 1. Obtener las variables de settings.py ---
+    client_id = getattr(settings, 'GOOGLE_DRIVE_CLIENT_ID', None)
+    client_secret = getattr(settings, 'GOOGLE_DRIVE_CLIENT_SECRET', None)
+    refresh_token = getattr(settings, 'GOOGLE_DRIVE_REFRESH_TOKEN', None)
+    # El access_token se puede dejar en None. El refresh lo generará.
+    access_token = getattr(settings, 'GOOGLE_DRIVE_ACCESS_TOKEN', None) 
+    
+    if not all([client_id, client_secret, refresh_token]):
+        # NOTA: En este punto, tu app fallaría si no encuentra los secretos.
+        raise ValueError("Faltan variables de configuración de Google Drive (CLIENT_ID, CLIENT_SECRET, o REFRESH_TOKEN) en settings.py")
+    
+    # --- 2. Crear el objeto Credentials con los datos de settings.py ---
+    creds = Credentials(
+        token=access_token, 
+        refresh_token=refresh_token,
+        client_id=client_id,
+        client_secret=client_secret,
+        token_uri=TOKEN_URI,
+        scopes=SCOPES
+    )
+    
+    # --- 3. Refrescar el token si está expirado o no presente ---
+    # Esto usa el refresh_token para obtener un nuevo access_token sin interacción.
+    if not creds.valid or not creds.token:
         if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
+            try:
+                creds.refresh(Request())
+            except RefreshError as e:
+                print(f"ERROR: No se pudo refrescar el token. Revise GOOGLE_DRIVE_REFRESH_TOKEN. Detalle: {e}")
+                raise
+        elif creds and creds.refresh_token:
+             # Forzar refresh si no hay token al inicio (token=None)
+            try:
+                creds.refresh(Request())
+            except RefreshError as e:
+                print(f"ERROR: No se pudo generar el token inicial. Revise GOOGLE_DRIVE_REFRESH_TOKEN. Detalle: {e}")
+                raise
         else:
-            # ¡IMPORTANTE! La primera vez que ejecutes esto, se abrirá una ventana
-            # del navegador para que autorices la app.
-            flow = InstalledAppFlow.from_client_secrets_file(credentials_path, SCOPES)
-            # LÍNEA CORREGIDA
-            creds = flow.run_local_server(port=8090)
-        
-        # Guarda las credenciales para la próxima ejecución
-        with open(token_path, 'w') as token:
-            token.write(creds.to_json())
+            # Esto NO DEBERÍA pasar si tienes el refresh_token
+            raise Exception("No hay credenciales válidas ni refresh_token disponible para Drive.")
+
 
     return build('drive', 'v3', credentials=creds)
 
@@ -78,6 +104,8 @@ def upload_file_to_drive(file_obj, area_slug):
     }
     
     # 3. Prepara el contenido del archivo para la subida
+    # Asegúrate de rebobinar el file_obj si ya se leyó antes (comentado si viene de un upload nuevo)
+    file_obj.seek(0)
     media = MediaIoBaseUpload(
         io.BytesIO(file_obj.read()),
         mimetype=file_obj.content_type,

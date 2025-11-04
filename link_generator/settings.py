@@ -23,6 +23,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-fur0=2sbj22_1nq-r$ywskl(cr-n#%k8nd11r_vtl@hac$5xlx'
 
+
+# settings.py
+
+# --- CONFIGURACIÓN DE GOOGLE DRIVE (IMPORTANTE: Mover a un archivo .env o secreto) ---
+# Extraído de tus datos:
+GOOGLE_DRIVE_CLIENT_ID = '200902768151-92m74e8qbec28um5ul157obv17m1uguk.apps.googleusercontent.com'
+GOOGLE_DRIVE_CLIENT_SECRET = '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'
+# Este es el token más importante aquí, permite obtener nuevos access tokens:
+GOOGLE_DRIVE_REFRESH_TOKEN = '1//0fzdGHtq6NtmSCgYIARAAGA8SNwF-L9IrrMNcNaLL6-7siqozCx7AZshRgOoHnxhVjY_1Wmn11irYjSirZdFkRDw10IoJZe0WvB0'
+# El access token cambia constantemente, lo dejamos en None para que se refresque automáticamente:
+GOOGLE_DRIVE_ACCESS_TOKEN = None
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
