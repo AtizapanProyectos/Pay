@@ -36,7 +36,7 @@ GOOGLE_DRIVE_REFRESH_TOKEN = '1//0fzdGHtq6NtmSCgYIARAAGA8SNwF-L9IrrMNcNaLL6-7siq
 GOOGLE_DRIVE_ACCESS_TOKEN = None
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
