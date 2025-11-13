@@ -1,56 +1,69 @@
-# link_generator/core/forms.py
-
 from django import forms
+from .models import AreaMunicipal
 
 # -----------------------------------------------------------------------------
-# PASO 1: CREAR UN WIDGET PERSONALIZADO
+# WIDGETS Y CAMPOS PERSONALIZADOS (Para subir múltiples archivos)
 # -----------------------------------------------------------------------------
-# Creamos una clase que le dice a Django que está bien renderizar
-# un input con el atributo 'multiple'.
 class MultipleFileInput(forms.ClearableFileInput):
     allow_multiple_selected = True
 
-# -----------------------------------------------------------------------------
-# PASO 2: CREAR UN CAMPO DE FORMULARIO PERSONALIZADO
-# -----------------------------------------------------------------------------
-# Creamos un campo que sabe cómo recibir y procesar una LISTA de archivos,
-# en lugar de solo uno.
 class MultipleFileField(forms.FileField):
     def __init__(self, *args, **kwargs):
-        # Le decimos que por defecto use nuestro widget personalizado.
         kwargs.setdefault("widget", MultipleFileInput())
         super().__init__(*args, **kwargs)
 
     def clean(self, data, initial=None):
-        # Obtenemos la función de limpieza del padre (para un solo archivo)
         single_file_clean = super().clean
-        
-        # Si 'data' es una lista (varios archivos subidos), limpiamos cada uno.
         if isinstance(data, (list, tuple)):
             result = [single_file_clean(d, initial) for d in data]
-        # Si no, simplemente limpiamos el único archivo.
         else:
             result = single_file_clean(data, initial)
-        
         return result
 
 # -----------------------------------------------------------------------------
-# PASO 3: USAR NUESTRO CAMPO PERSONALIZADO EN EL FORMULARIO
+# FORMULARIO DE SUBIDA (Con lógica inteligente de áreas)
 # -----------------------------------------------------------------------------
 class UploadFileForm(forms.Form):
-    # En lugar de forms.FileField, usamos nuestro MultipleFileField.
-    # Este campo ya sabe que debe aceptar múltiples archivos.
+    area_destino = forms.ModelChoiceField(
+        queryset=AreaMunicipal.objects.none(),
+        label="Selecciona el Área de Destino",
+        required=True, 
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+    
     archivo = MultipleFileField(
         label="Selecciona uno o más archivos",
         widget=MultipleFileInput(attrs={
-            'id': 'fileElem', # Mantenemos el ID para controlarlo con JS
+            'id': 'fileElem', 
             'onchange': 'handleFiles(this.files)'
         })
     )
 
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(UploadFileForm, self).__init__(*args, **kwargs)
+        
+        if user and hasattr(user, 'perfilusuario'):
+            mis_areas = user.perfilusuario.areas.all()
+            self.fields['area_destino'].queryset = mis_areas
+
+            # --- LÓGICA INTELIGENTE ---
+            if mis_areas.count() == 1:
+                # Si solo tiene 1 área, la pre-seleccionamos y ocultamos el campo
+                self.fields['area_destino'].initial = mis_areas.first()
+                self.fields['area_destino'].widget = forms.HiddenInput()
+            else:
+                # Si tiene varias, obligamos a elegir
+                self.fields['area_destino'].empty_label = "--- Selecciona un Área ---"
+
 # -----------------------------------------------------------------------------
-# La clase LoginForm no cambia
+# FORMULARIO DE LOGIN (Este era el que faltaba)
 # -----------------------------------------------------------------------------
 class LoginForm(forms.Form):
-    username = forms.CharField(max_length=150, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Usuario'}))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Contraseña'}))
+    username = forms.CharField(
+        max_length=150, 
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Usuario'})
+    )
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Contraseña'})
+    )

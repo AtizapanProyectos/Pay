@@ -36,7 +36,7 @@ GOOGLE_DRIVE_REFRESH_TOKEN = '1//0fzdGHtq6NtmSCgYIARAAGA8SNwF-L9IrrMNcNaLL6-7siq
 GOOGLE_DRIVE_ACCESS_TOKEN = None
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -184,4 +184,4 @@ STORAGES = {
 
 
 
-CSRF_TRUSTED_ORIGINS =  ['http://*', 'https://*', 'https://web-production-12f15b.up.railway.app']
+CSRF_TRUSTED_ORIGINS =  ['http://*', 'https://*', 'https://web-production-12f15b.up.railway.app', 'http://127.0.0.1:8000']

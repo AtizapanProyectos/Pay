@@ -4,465 +4,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - {{ area_nombre }}</title>
+    <title>Dashboard Institucional</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <style>
+        /* Mismos estilos que tenías anteriormente */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #f8f9fe 0%, #e8ecf7 100%); min-height: 100vh; position: relative; }
+        body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: radial-gradient(circle at 20% 30%, rgba(182, 79, 128, 0.03) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(86, 133, 141, 0.03) 0%, transparent 50%); pointer-events: none; z-index: 0; }
+        .main-header { background: linear-gradient(135deg, #4d4383 0%, #6767a5 50%, #56858d 100%); padding: 1.2rem 2rem; box-shadow: 0 4px 20px rgba(77, 67, 131, 0.3); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+        .logo-container img { height: 50px; width: auto; } /* Ajustado tamaño */
+        .user-info { display: flex; align-items: center; gap: 1rem; color: white; font-size: 0.95rem; }
+        .user-info strong { font-weight: 600; background: rgba(255, 255, 255, 0.2); padding: 0.4rem 0.8rem; border-radius: 20px; }
+        .user-info a { color: white; text-decoration: none; padding: 0.5rem 1rem; background: rgba(182, 79, 128, 0.3); border-radius: 20px; transition: all 0.3s ease; }
+        .user-info a:hover { background: rgba(182, 79, 128, 0.6); }
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 2rem; position: relative; z-index: 1; }
+        h1 { font-size: 2.2rem; font-weight: 800; color: #4d4383; margin-bottom: 2rem; }
+        .card { background: white; border-radius: 24px; padding: 2.5rem; margin-bottom: 2rem; box-shadow: 0 10px 40px rgba(77, 67, 131, 0.08); position: relative; overflow: hidden; }
+        .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #4d4383 0%, #b64f80 100%); }
+        .card h2 { font-size: 1.5rem; color: #4d4383; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; }
+        
+        /* Estilos para el selector de área */
+        .form-group { margin-bottom: 1.5rem; }
+        .form-label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: #4d4383; }
+        .form-control { width: 100%; padding: 0.8rem; border: 2px solid #e0e5ef; border-radius: 12px; font-size: 1rem; transition: border-color 0.3s; }
+        .form-control:focus { outline: none; border-color: #6767a5; }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #f8f9fe 0%, #e8ecf7 100%);
-            min-height: 100vh;
-            position: relative;
-        }
-
-        /* Patrón de fondo sutil */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                radial-gradient(circle at 20% 30%, rgba(182, 79, 128, 0.03) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(86, 133, 141, 0.03) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        /* Header moderno */
-        .main-header {
-            background: linear-gradient(135deg, #4d4383 0%, #6767a5 50%, #56858d 100%);
-            padding: 1.2rem 2rem;
-            box-shadow: 0 4px 20px rgba(77, 67, 131, 0.3);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            backdrop-filter: blur(10px);
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-        }
-
-        .logo-container img {
-            height: 102px;
-            width: auto;
-            filter: drop-shadow(0 2px 10px rgba(255, 255, 255, 0.3));
-            transition: transform 0.3s ease;
-        }
-
-        .logo-container img:hover {
-            transform: scale(1.05);
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            color: white;
-            font-size: 0.95rem;
-        }
-
-        .user-info strong {
-            font-weight: 600;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 0.4rem 0.8rem;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-        }
-
-        .user-info a {
-            color: white;
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            background: rgba(182, 79, 128, 0.3);
-            border-radius: 20px;
-            transition: all 0.3s ease;
-            font-weight: 500;
-        }
-
-        .user-info a:hover {
-            background: rgba(182, 79, 128, 0.6);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Container principal */
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 2rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Título principal */
-        h1 {
-            font-size: 2.2rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #4d4383 0%, #b64f80 50%, #56858d 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 2rem;
-            letter-spacing: -0.5px;
-            animation: fadeInDown 0.6s ease-out;
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Cards mejoradas */
-        .card {
-            background: white;
-            border-radius: 24px;
-            padding: 2.5rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 10px 40px rgba(77, 67, 131, 0.08);
-            border: 1px solid rgba(103, 103, 165, 0.1);
-            position: relative;
-            overflow: hidden;
-            animation: fadeInUp 0.6s ease-out;
-            animation-fill-mode: both;
-        }
-
-        .card:nth-child(2) { animation-delay: 0.1s; }
-        .card:nth-child(3) { animation-delay: 0.2s; }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #4d4383 0%, #b64f80 25%, #56858d 50%, #6767a5 75%, #79b0cc 100%);
-        }
-
-        .card h2 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #4d4383;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .card h2::before {
-            content: '';
-            width: 6px;
-            height: 28px;
-            background: linear-gradient(180deg, #b64f80, #6767a5);
-            border-radius: 3px;
-        }
-
-        /* Drop Area mejorada */
-        #drop-area {
-            border: 3px dashed #d0d5dd;
-            border-radius: 20px;
-            padding: 3rem 2rem;
-            text-align: center;
-            background: linear-gradient(135deg, #fafbff 0%, #f4f6fc 100%);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        #drop-area::before {
-            content: '📁';
-            position: absolute;
-            font-size: 5rem;
-            opacity: 0.1;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-        }
-
-        #drop-area.highlight {
-            border-color: #b64f80;
-            background: linear-gradient(135deg, #fef5f9 0%, #f9f4fb 100%);
-            box-shadow: 0 10px 40px rgba(182, 79, 128, 0.2);
-            transform: scale(1.02);
-        }
-
-        #drop-area p {
-            color: #6767a5;
-            font-size: 1.1rem;
-            margin: 0.5rem 0;
-            font-weight: 500;
-            position: relative;
-            z-index: 1;
-        }
-
-        #drop-area .btn {
-            margin-top: 1rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        #gallery {
-            margin-top: 1.5rem;
-            color: #4d4383;
-            font-weight: 500;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Botones mejorados */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.8rem 1.5rem;
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Inter', sans-serif;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        .btn:active {
-            transform: translateY(0);
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #6767a5 0%, #4d4383 100%);
-            color: white;
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, #56858d 0%, #79b0cc 100%);
-            color: white;
-            width: 100%;
-            margin-top: 1.5rem;
-            padding: 1rem;
-            font-size: 1.05rem;
-        }
-
-        .btn-secondary {
-            background: linear-gradient(135deg, #b64f80 0%, #6767a5 100%);
-            color: white;
-        }
-
-        .btn-danger {
-            background: linear-gradient(135deg, #dc3545 0%, #b02a37 100%);
-            color: white;
-        }
-
-        .btn-sm {
-            padding: 0.5rem 1rem;
-            font-size: 0.85rem;
-        }
-
-        /* Tabla moderna */
-        .table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            margin-top: 1.5rem;
-        }
-
-        .table thead th {
-            background: linear-gradient(135deg, #f8f9fe 0%, #eef1f9 100%);
-            color: #4d4383;
-            font-weight: 700;
-            padding: 1rem 1.5rem;
-            text-align: left;
-            font-size: 0.9rem;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            border-bottom: 2px solid #e0e5ef;
-        }
-
-        .table thead th:first-child {
-            border-radius: 12px 0 0 0;
-        }
-
-        .table thead th:last-child {
-            border-radius: 0 12px 0 0;
-        }
-
-        .table tbody tr {
-            transition: all 0.2s ease;
-        }
-
-        .table tbody tr:hover {
-            background: linear-gradient(135deg, #fafbff 0%, #f6f8fd 100%);
-            transform: scale(1.01);
-            box-shadow: 0 4px 15px rgba(77, 67, 131, 0.08);
-        }
-
-        .table tbody td {
-            padding: 1.2rem 1.5rem;
-            border-bottom: 1px solid #f0f2f7;
-            color: #585958;
-        }
-
-        .table tbody td a {
-            color: #b64f80;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-
-        .table tbody td a:hover {
-            color: #6767a5;
-            text-decoration: underline;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-        }
-
-        /* Empty state */
-        .table tbody tr td[colspan] {
-            text-align: center;
-            padding: 3rem;
-            color: #9ca3af;
-            font-style: italic;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .main-header {
-                flex-direction: column;
-                gap: 1rem;
-                padding: 1rem;
-            }
-
-            .container {
-                padding: 0 1rem;
-            }
-
-            h1 {
-                font-size: 1.8rem;
-            }
-
-            .card {
-                padding: 1.5rem;
-                border-radius: 16px;
-            }
-
-            .table thead {
-                display: none;
-            }
-
-            .table tbody tr {
-                display: block;
-                margin-bottom: 1rem;
-                border-radius: 12px;
-                overflow: hidden;
-                box-shadow: 0 4px 15px rgba(77, 67, 131, 0.1);
-            }
-
-            .table tbody td {
-                display: flex;
-                justify-content: space-between;
-                padding: 1rem;
-                border: none;
-            }
-
-            .table tbody td::before {
-                content: attr(data-label);
-                font-weight: 700;
-                color: #4d4383;
-            }
-
-            .action-buttons {
-                width: 100%;
-                justify-content: flex-end;
-            }
-        }
-
-        /* Loading animation */
-        @keyframes shimmer {
-            0% { background-position: -1000px 0; }
-            100% { background-position: 1000px 0; }
-        }
-
-        /* Decorative elements */
-        .floating-decoration {
-            position: fixed;
-            width: 300px;
-            height: 300px;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 0;
-            opacity: 0.05;
-        }
-
-        .floating-decoration:nth-child(1) {
-            background: radial-gradient(circle, #b64f80, transparent);
-            top: -100px;
-            right: -100px;
-            animation: float 20s ease-in-out infinite;
-        }
-
-        .floating-decoration:nth-child(2) {
-            background: radial-gradient(circle, #56858d, transparent);
-            bottom: -150px;
-            left: -150px;
-            animation: float 25s ease-in-out infinite reverse;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            33% { transform: translate(30px, -30px) rotate(120deg); }
-            66% { transform: translate(-20px, 20px) rotate(240deg); }
-        }
+        #drop-area { border: 3px dashed #d0d5dd; border-radius: 20px; padding: 3rem 2rem; text-align: center; background: #fafbff; transition: all 0.3s ease; }
+        #drop-area.highlight { border-color: #b64f80; background: #fef5f9; }
+        .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.8rem 1.5rem; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; color: white; margin-top: 10px;}
+        .btn-primary { background: #6767a5; }
+        .btn-success { background: linear-gradient(135deg, #56858d 0%, #79b0cc 100%); width: 100%; margin-top: 1.5rem; }
+        .btn-secondary { background: #b64f80; padding: 0.4rem 0.8rem; font-size: 0.8rem;}
+        .btn-danger { background: #dc3545; padding: 0.4rem 0.8rem; font-size: 0.8rem;}
+        
+        /* Estilos Tabla */
+        .table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 1rem; }
+        .table th { background: #f8f9fe; padding: 1rem; text-align: left; color: #4d4383; border-bottom: 2px solid #e0e5ef; }
+        .table td { padding: 1.2rem 1rem; border-bottom: 1px solid #f0f2f7; color: #585958; }
+        .area-section { margin-bottom: 3rem; }
+        .area-badge { background: #e8ecf7; color: #4d4383; padding: 0.3rem 0.8rem; border-radius: 12px; font-size: 0.8rem; font-weight: 700; margin-left: 10px; }
     </style>
 </head>
 <body>
-    <!-- Decoraciones flotantes -->
-    <div class="floating-decoration"></div>
-    <div class="floating-decoration"></div>
-
     <header class="main-header">
         <div class="logo-container">
-            <img src="{% static 'images/logo.png' %}" alt="Logo Institucional">
+            <span style="color:white; font-weight:bold; font-size:1.5rem;">Gestor Municipal</span>
         </div>
         <div class="user-info">
             <span>Bienvenido, <strong>{{ user.username }}</strong></span>
@@ -471,14 +58,24 @@
     </header>
 
     <main class="container">
-        
-        <h1>Dirección: {{ area_nombre }}</h1>
+        <h1>Panel de Control</h1>
 
         <div class="card">
             <h2>Subir Nuevos Archivos</h2>
             <form id="upload-form" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
+{% csrf_token %}
                 
+                {% if not form.area_destino.is_hidden %}
+                    <div class="form-group">
+                        <label for="{{ form.area_destino.id_for_label }}" class="form-label">
+                            📂 ¿A qué área corresponde este archivo?
+                        </label>
+                        {{ form.area_destino }}
+                    </div>
+                {% else %}
+                    {{ form.area_destino }}
+                {% endif %}
+
                 <div style="display:none;">{{ form.archivo }}</div>
                 
                 <div id="drop-area">
@@ -496,51 +93,66 @@
             </form>
         </div>
 
-        <div class="card">
-            <h2>Mis Archivos Subidos</h2>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Nombre del Archivo</th>
-                        <th>Link Público</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for archivo in archivos %}
-                    <tr>
-                        <td data-label="Archivo">📄 {{ archivo.nombre_personalizado }}</td>
-                        <td data-label="Link">
-                            {% url 'serve_file' area_slug=archivo.area.slug file_slug=archivo.slug as file_path %}
-                            {% with full_link=request.scheme|add:"://"|add:request.get_host|add:file_path %}
-                                
-                            <a href="{{ archivo.google_drive_link }}" target="_blank">
-                                Ver en Google Drive     
-                            </a>
-                                 
-                            <button onclick="copyLink('{{ archivo.google_drive_link }}', this)" class="btn btn-secondary btn-sm">
-                                📋 Copiar
-                            </button>
+        {% if dashboard_data %}
+            {% for item in dashboard_data %}
+            <div class="card area-section">
+                <h2>
+                    📂 Área: {{ item.area_obj.nombre }}
+                    <span class="area-badge">Archivos: {{ item.archivos.count }}</span>
+                </h2>
+                
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Nombre del Archivo</th>
+                            <th>Link Público</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for archivo in item.archivos %}
+                        <tr>
+                            <td>📄 {{ archivo.nombre_personalizado }}</td>
+                            <td>
+                                {% url 'serve_file' area_slug=archivo.area.slug file_slug=archivo.slug as file_path %}
+                                {% with full_link=request.scheme|add:"://"|add:request.get_host|add:file_path %}
+                                    
+                                <a href="{{ archivo.google_drive_link }}" target="_blank" style="color:#4d4383; text-decoration: none; font-weight:500; margin-right:10px;">
+                                    Ver en Drive
+                                </a>
+                                     
+                                <button onclick="copyLink('{{ archivo.google_drive_link }}', this)" class="btn btn-secondary">
+                                    📋 Copiar
+                                </button>
 
-                            {% endwith %}
-                        </td>
-                        <td data-label="Acciones">
-                            <div class="action-buttons">
-                                <form method="post" action="{% url 'delete_file' file_id=archivo.id %}" onsubmit="return confirm('¿Seguro que quieres eliminar este archivo?');">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-danger btn-sm">🗑️ Eliminar</button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="3">Aún no has subido ningún archivo. ¡Comienza ahora!</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+                                {% endwith %}
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <form method="post" action="{% url 'delete_file' file_id=archivo.id %}" onsubmit="return confirm('¿Seguro que quieres eliminar este archivo del área {{ item.area_obj.nombre }}?');">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger">🗑️ Eliminar</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" style="text-align:center; padding:2rem; color:#999;">
+                                No hay archivos en el área de {{ item.area_obj.nombre }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="card">
+                <p>No tienes áreas asignadas. Por favor contacta al soporte técnico.</p>
+            </div>
+        {% endif %}
+
     </main>
     
     <script src="{% static 'js/main.js' %}"></script>
